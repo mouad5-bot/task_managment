@@ -26,7 +26,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void taskCannotCreateInThePast(Task task) {
-        if (task.getAssignedDate().isBefore(LocalDateTime.now())){
+
+        if (task.getAssignedDate() != null && task.getAssignedDate().isBefore(LocalDateTime.now()) ){
             throw new IllegalArgumentException("The date is in the past !");
         }
     }
@@ -34,16 +35,20 @@ public class TaskServiceImpl implements TaskService {
         if (task.getTags() == null || task.getTags().size() < 2) {
             throw new IllegalArgumentException("At least 2 tags is required !");
         }
+        //check if the tags existe dont save it , if not add it in tag database
     }
 
     private void restrictTaskScheduling(Task task) throws Exception {
         LocalDate currentDate = LocalDate.now();
         LocalDate taskExpDate = task.getExpDate().toLocalDate();
+        LocalDate taskAssigned = task.getAssignedDate().toLocalDate();
         LocalDate maxAllowedExpDate = currentDate.plusDays(3);
 
-        if (taskExpDate.isAfter(maxAllowedExpDate)) {
-            throw new Exception("Task scheduling is restricted to 3 days in advance.");
-        }
+        if (taskExpDate.isBefore(maxAllowedExpDate))
+            throw new Exception("Date expiration cannot be before assigned date !");
+
+        if (taskAssigned.isBefore(maxAllowedExpDate))
+            throw new Exception("the task cannot be assigned before 3 days form now !");
     }
 
     @Override
