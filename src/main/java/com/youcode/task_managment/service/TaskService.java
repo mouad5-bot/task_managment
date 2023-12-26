@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface TaskService {
     Task add(Task task) throws Exception;
+
+    Task markTaskAsCompleted(Long taskId) throws Exception;
+
     List<Task> getAll(Pageable pageable);
 }
