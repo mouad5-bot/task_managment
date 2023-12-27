@@ -18,7 +18,6 @@ public class Task {
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
-
     private LocalDateTime expDate;
 
     private boolean completed;

@@ -4,6 +4,7 @@ import com.youcode.task_managment.domain.Tag;
 import com.youcode.task_managment.domain.Task;
 import com.youcode.task_managment.domain.User;
 import com.youcode.task_managment.repository.TaskRepository;
+import com.youcode.task_managment.repository.UserRepository;
 import com.youcode.task_managment.service.TagService;
 import com.youcode.task_managment.service.TaskService;
 import com.youcode.task_managment.web.dto.TaskDto;
@@ -24,11 +25,12 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TagService tagService;
+    private final UserRepository userRepository;
+
     @Override
     public Task add(Task task) throws Exception {
         taskCannotCreateInThePast(task);
         validateTags(task);
-        //restrictTaskScheduling(task);
         return taskRepository.save(task);
     }
 
@@ -52,9 +54,21 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.save(task);
     }
 
-//    public Task assignTask(Task task, User user){
-//
-//    }
+    @Override
+    public Task assignTask(Long idTask, Long idUser, LocalDateTime assignedDate ) throws Exception {
+        Task task = taskRepository.findById(idTask).orElseThrow();
+        User user = userRepository.findById(idUser).orElseThrow();
+
+        Task.builder()
+                .assignedDate(assignedDate)
+                .user(user)
+                .build();
+
+        restrictTaskScheduling(task);
+
+        return task;
+
+    }
 
     @Override
     public List<Task> getAll(Pageable pageable) {

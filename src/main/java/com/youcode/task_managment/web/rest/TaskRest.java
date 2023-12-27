@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +22,11 @@ public class TaskRest {
     public ResponseEntity<Task> add(@RequestBody TaskDto task) throws Exception {
         Task save = taskService.add(TaskDtoMapper.mapToEntity(task));
         return ResponseEntity.ok(save);
+    }
+    @PostMapping("assign")
+    public ResponseEntity<Task> assignTask(@RequestBody Long idTask, Long idUser, LocalDateTime assignedDate) throws Exception {
+        Task assign = taskService.assignTask(idTask, idUser, assignedDate);
+        return ResponseEntity.ok(assign);
     }
 
     @GetMapping("all")
