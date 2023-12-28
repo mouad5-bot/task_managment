@@ -4,6 +4,7 @@ import com.youcode.task_managment.domain.Tag;
 import com.youcode.task_managment.repository.TagRepository;
 import com.youcode.task_managment.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,5 +20,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> findByNameIn(List<Tag> names) {
         return null;
+    }
+
+    @Override
+    public List<Tag> getAll(Pageable p) {
+        return tagRepository.findAll(p).toList();
     }
 }

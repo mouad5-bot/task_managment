@@ -1,9 +1,9 @@
 package com.youcode.task_managment.web.rest;
 
 import com.youcode.task_managment.domain.Task;
+import com.youcode.task_managment.dtos.TaskDto;
+import com.youcode.task_managment.dtos.mappers.TaskMapper;
 import com.youcode.task_managment.service.TaskService;
-import com.youcode.task_managment.web.dto.TaskDto;
-import com.youcode.task_managment.web.mapper.TaskDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +18,10 @@ import java.util.List;
 @RequestMapping("/api/v1/task/")
 public class TaskRest {
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
     @PostMapping("add")
     public ResponseEntity<Task> add(@RequestBody TaskDto task) throws Exception {
-        Task save = taskService.add(TaskDtoMapper.mapToEntity(task));
+        Task save = taskService.add(taskMapper.toEntity(task));
         return ResponseEntity.ok(save);
     }
     @PostMapping("assign")
@@ -35,7 +36,7 @@ public class TaskRest {
         List<Task> taskList = taskService.getAll(pageable);
 
         return ResponseEntity.ok(taskList.stream()
-                .map(TaskDtoMapper::mapToDto)
+                .map(taskMapper::toDto)
                 .toList()
         );
     }

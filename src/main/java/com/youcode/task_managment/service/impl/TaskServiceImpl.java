@@ -7,8 +7,6 @@ import com.youcode.task_managment.repository.TaskRepository;
 import com.youcode.task_managment.repository.UserRepository;
 import com.youcode.task_managment.service.TagService;
 import com.youcode.task_managment.service.TaskService;
-import com.youcode.task_managment.web.dto.TaskDto;
-import com.youcode.task_managment.web.mapper.TaskDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
