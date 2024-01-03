@@ -7,5 +7,5 @@ import java.io.Serializable;
 /**
  * DTO for {@link com.youcode.task_managment.domain.Role}
  */
-public record RoleDto(@NotBlank String name) implements Serializable {
+public record RoleDto(Long id, @NotBlank String name) implements Serializable {
 }

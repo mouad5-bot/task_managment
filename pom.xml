@@ -16,6 +16,8 @@
 
     <properties>
         <java.version>17</java.version>
+        <properties-maven-plugin.version>1.2.1</properties-maven-plugin.version>
+        <sonar-maven-plugin.version>.10.0.2594</sonar-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -66,6 +68,19 @@
             <artifactId>hibernate-envers</artifactId>
             <version>6.2.7.Final</version>
         </dependency>
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -94,11 +109,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>jakarta.validation</groupId>-->
-<!--            <artifactId>jakarta.validation-api</artifactId>-->
-<!--            <version>2.0.2</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -109,6 +119,12 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.10.0.2594</version>
         </dependency>
 
     </dependencies>
@@ -139,6 +155,24 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>${properties-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>sonar-project.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

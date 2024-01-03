@@ -1,5 +1,6 @@
 package com.youcode.task_managment.aop.handler;
 
+import com.youcode.task_managment.exception.EmailOrPasswordIncorrectException;
 import com.youcode.task_managment.exception.InsufficientTokensException;
 import com.youcode.task_managment.exception.UnauthorizedException;
 import com.youcode.task_managment.utils.CustomError;
@@ -9,21 +10,24 @@ import com.youcode.task_managment.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExceptionHandler {
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     private Response<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Response<Object> response = new Response<>();
         List<CustomError> errorList = new ArrayList<>();
         response.setMessage("Validation error");
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = error.getObjectName();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String fieldName = error.getField();
             String errorMessage = error.getDefaultMessage();
             errorList.add(new CustomError(fieldName, errorMessage));
         });
@@ -31,8 +35,8 @@ public class ExceptionHandler {
         return response;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
     private Response<Object> handleValidationExceptions(ResourceNotFoundException ex) {
         Response<Object> response = new Response<>();
         List<CustomError> errorList = new ArrayList<>();
@@ -46,7 +50,7 @@ public class ExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @org.springframework.web.bind.annotation.ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(ValidationException.class)
     private Response<Object> handleValidationExceptions(ValidationException ex) {
         Response<Object> response = new Response<>();
         List<CustomError> errorList = new ArrayList<>();
@@ -60,7 +64,7 @@ public class ExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     private ResponseEntity<Response<Object>> handleValidationExceptions(Exception ex) {
         ex.printStackTrace();
         return ResponseEntity.internalServerError().body(Response.builder()
@@ -70,10 +74,21 @@ public class ExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @org.springframework.web.bind.annotation.ExceptionHandler({UnauthorizedException.class, InsufficientTokensException.class})
+    @ExceptionHandler({UnauthorizedException.class, InsufficientTokensException.class})
     public ResponseEntity<Response<Object>> handleUnauthorizedException(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Response.builder()
                 .message(ex.getMessage())
                 .build());
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailOrPasswordIncorrectException.class)
+    public ResponseEntity<Response<Object>> handleEmailOrPasswordIncorrectException(
+            EmailOrPasswordIncorrectException ex){
+        CustomError error = new CustomError("credentials", ex.getMessage());
+        Response<Object> result = new Response<>();
+        result.setErrors(List.of(error));
+        result.setMessage(ex.getMessage());
+        return ResponseEntity.badRequest()
+                .body(result);
     }
 }

@@ -17,13 +17,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/tag/")
-public class TagRest {
+public class TagResource {
     private final TagService tagService;
     private final TagMapper tagMapper;
 
     @GetMapping("all")
-    public ResponseEntity<List<TagDto>> getAll(@ParameterObject Pageable pageable) {
-
+    public ResponseEntity<List<TagDto>> getAll(@ParameterObject Pageable pageable)
+             {
         List<Tag> tagList = tagService.getAll(pageable);
 
         return ResponseEntity.ok(tagList.stream()

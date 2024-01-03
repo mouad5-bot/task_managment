@@ -7,5 +7,5 @@ import java.io.Serializable;
 /**
  * DTO for {@link com.youcode.task_managment.domain.Tag}
  */
-public record TagDto(@NotBlank String name) implements Serializable {
+public record TagDto(Long id, @NotBlank String name) implements Serializable {
 }
