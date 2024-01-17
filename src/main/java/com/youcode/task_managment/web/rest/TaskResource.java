@@ -21,8 +21,13 @@ public class TaskResource {
     private final TaskService taskService;
     private final TaskMapper taskMapper;
     @PostMapping("add")
-    public ResponseEntity<Task> add(@RequestBody @Valid TaskDto task) throws Exception {
-        Task save = taskService.add(taskMapper.toEntity(task));
+//    public ResponseEntity<Task> add(@RequestBody @Valid TaskDto task) throws Exception {
+//        Task save = taskService.add(taskMapper.toEntity(task));
+//        return ResponseEntity.ok(save);
+//    }
+
+    public ResponseEntity<Task> add(@RequestBody Task task) throws Exception {
+        Task save  = taskService.add(task);
         return ResponseEntity.ok(save);
     }
 
